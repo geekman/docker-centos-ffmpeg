@@ -1,0 +1,59 @@
+#! /bin/sh
+
+# chkconfig: 345 99 10
+# description: Fedora Startup/shutdown script for MiniDLNA daemon
+
+# If you have chkconfig, simply:
+# chkconfig --add minildna
+
+# Proper init scripts on Linux systems normally require setting lock
+# and pid files under /var/run as well as reacting to network
+# settings, so you should treat this with care.
+
+# Original author:  Perry Clark <omfgppc (at) gmail.com>
+# Edited by: David Gleich <wister.geo (at) yahoo.com>
+
+. /etc/rc.d/init.d/functions
+
+# Installation details
+MINIDLNA="/usr/sbin/minidlnad"
+ARGS="-f /etc/minidlna.conf"
+
+# Where the PID & Lockfile lives
+PID_FILE="/var/run/minidlna.pid"
+LOCKFILE="/var/lock/subsys/minidlna"
+RETVAL=0
+
+# Only start if we can find the minidlna.conf.
+test -x $MINIDLNA || exit 0
+
+
+# Parse command line parameters.
+case $1 in
+  start)
+        echo -n "Starting MiniDLNA: "
+        daemon --pidfile=$PID_FILE $MINIDLNA -P "$PID_FILE" $ARGS 
+        RETVAL=$?
+	echo
+        [ $RETVAL -eq 0 ] && touch $LOCKFILE
+        ;;
+  stop)
+        echo -n "Stopping MiniDLNA: "
+        killproc -p $PID_FILE $MINIDLNA
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && rm -f $LOCKFILE
+        ;;
+  restart|reload|force-reload)
+        echo "Restarting MiniDLNA: "
+        $0 stop
+        $0 start
+        ;;
+  *)
+        # Print help
+        echo "Usage: /etc/init.d/minidlna {start|stop|restart|reload|force-reload}"
+        exit 1
+        ;;
+esac
+
+exit $RETVAL
