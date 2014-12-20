@@ -29,7 +29,8 @@ eval_spec() {
 
 # download source
 SPEC_URL=`eval_spec minidlna.spec | sed -n 's/Source0:[ \t]*// p'`
-curl -L -O "$SPEC_URL"
+SRC_FILE=${SPEC_URL##*/}
+[ ! -f "$SRC_FILE" ] && curl -L -O "$SPEC_URL"
 
 SPECFILE=
 for f in *; do
