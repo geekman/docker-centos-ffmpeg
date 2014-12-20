@@ -11,7 +11,6 @@ Source0:        http://downloads.sourceforge.net/%{name}/%{version}/%{name}-%{ve
 Source1:        %{name}.init
 # tmpfiles configuration for the /run directory
 #Source2:        %{name}-tmpfiles.conf 
-Patch0:          configure-libav.patch
 
 BuildRequires:  libuuid-devel
 BuildRequires:  sqlite-devel
@@ -45,15 +44,14 @@ and televisions.
 sed -i 's/#log_dir=\/var\/log/#log_dir=\/var\/log\/minidlna/' \
   %{name}.conf
 
-# apply patch for configure
-%patch0
 
 %build
 %configure \
   --disable-silent-rules \
   --with-db-path=%{_localstatedir}/cache/%{name} \
   --with-log-path=%{_localstatedir}/log/%{name} \
-  --enable-tivo
+  --enable-tivo \
+  LIBS="`pkg-config --libs libavformat`"
 
 make %{?_smp_mflags} 
 
@@ -138,6 +136,9 @@ exit 0
 
 
 %changelog
+* Sat Dec 20 2014 Darell Tan <darell.tan@gmail.com> - 1.1.4-3gm
+- Removed ugly hack to configure script to support static ffmpeg libs
+
 * Sun Dec 14 2014 Darell Tan <darell.tan@gmail.com> - 1.1.4-3gm
 - Adapted build for CentOS 6
 
