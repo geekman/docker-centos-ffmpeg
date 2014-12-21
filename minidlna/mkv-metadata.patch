@@ -1,0 +1,29 @@
+diff -ur minidlna-1.1.4/metadata.c minidlna-1.1.4gm/metadata.c
+--- minidlna-1.1.4/metadata.c	2014-08-26 22:09:22.000000000 +0100
++++ minidlna-1.1.4gm/metadata.c	2014-12-20 08:18:36.660221063 +0000
+@@ -1418,6 +1418,8 @@
+ 		}
+ 	}
+ 
++video_no_dlna:
++
+ 	if( strcmp(ctx->iformat->name, "asf") == 0 )
+ 	{
+ 		if( readtags((char *)path, &video, &file, "en_US", "asf") == 0 )
+@@ -1452,7 +1454,7 @@
+ 	}
+ 	#ifndef NETGEAR
+ 	#if LIBAVFORMAT_VERSION_INT >= ((52<<16)+(31<<8)+0)
+-	else if( strcmp(ctx->iformat->name, "mov,mp4,m4a,3gp,3g2,mj2") == 0 )
++	else if( strcmp(ctx->iformat->name, "mov,mp4,m4a,3gp,3g2,mj2") == 0 || strcmp(ctx->iformat->name, "matroska,webm") == 0 )
+ 	{
+ 		if( ctx->metadata )
+ 		{
+@@ -1475,7 +1477,6 @@
+ 	}
+ 	#endif
+ 	#endif
+-video_no_dlna:
+ 
+ #ifdef TIVO_SUPPORT
+ 	if( ends_with(path, ".TiVo") && is_tivo_file(path) )

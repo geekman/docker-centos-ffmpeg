@@ -1,6 +1,6 @@
 Name:           minidlna
 Version:        1.1.4
-Release:        4gm%{?dist}
+Release:        5gm%{?dist}
 Summary:        Lightweight DLNA/UPnP-AV server targeted at embedded systems
 
 Group:          System Environment/Daemons
@@ -9,6 +9,7 @@ URL:            http://sourceforge.net/projects/minidlna/
 Source0:        http://downloads.sourceforge.net/%{name}/%{version}/%{name}-%{version}.tar.gz
 # Systemd unit file
 Source1:        %{name}.init
+Patch0:         mkv-metadata.patch
 
 BuildRequires:  libuuid-devel
 BuildRequires:  sqlite-devel
@@ -37,6 +38,8 @@ and televisions.
 
 %prep
 %setup -q
+
+%patch0 -p1
 
 
 %build
@@ -127,6 +130,9 @@ exit 0
 
 
 %changelog
+* Sun Dec 21 2014 Darell Tan <darell.tan@gmail.com> - 1.1.4-5gm
+- Added support for reading metadata from MKV files
+
 * Sun Dec 21 2014 Darell Tan <darell.tan@gmail.com> - 1.1.4-4gm
 - Restored original path of logfile to /var/log instead of /var/log/minidlna
 
