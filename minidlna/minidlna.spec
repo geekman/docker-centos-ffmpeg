@@ -1,6 +1,6 @@
 Name:           minidlna
 Version:        1.1.4
-Release:        3gm%{?dist}
+Release:        4gm%{?dist}
 Summary:        Lightweight DLNA/UPnP-AV server targeted at embedded systems
 
 Group:          System Environment/Daemons
@@ -9,8 +9,6 @@ URL:            http://sourceforge.net/projects/minidlna/
 Source0:        http://downloads.sourceforge.net/%{name}/%{version}/%{name}-%{version}.tar.gz
 # Systemd unit file
 Source1:        %{name}.init
-# tmpfiles configuration for the /run directory
-#Source2:        %{name}-tmpfiles.conf 
 
 BuildRequires:  libuuid-devel
 BuildRequires:  sqlite-devel
@@ -39,10 +37,6 @@ and televisions.
 
 %prep
 %setup -q
-
-# Edit the default config file 
-sed -i 's/#log_dir=\/var\/log/#log_dir=\/var\/log\/minidlna/' \
-  %{name}.conf
 
 
 %build
@@ -84,8 +78,6 @@ install -d -m 0755 %{buildroot}/run/%{name}/
 # Create cache and log directories
 mkdir -p %{buildroot}%{_localstatedir}/cache
 install -d -m 0755 %{buildroot}%{_localstatedir}/cache/%{name}/
-mkdir -p %{buildroot}%{_localstatedir}/log
-install -d -m 0755 %{buildroot}%{_localstatedir}/log/%{name}/
 
 %find_lang %{name}
 
@@ -131,11 +123,13 @@ exit 0
 %dir %attr(-,minidlna,minidlna) /run/%{name}
 #%{_tmpfilesdir}/%{name}.conf
 %dir %attr(-,minidlna,minidlna) %{_localstatedir}/cache/%{name}/
-%dir %attr(-,minidlna,minidlna) %{_localstatedir}/log/%{name}/
 %doc AUTHORS COPYING LICENCE.miniupnpd NEWS README TODO
 
 
 %changelog
+* Sun Dec 21 2014 Darell Tan <darell.tan@gmail.com> - 1.1.4-4gm
+- Restored original path of logfile to /var/log instead of /var/log/minidlna
+
 * Sat Dec 20 2014 Darell Tan <darell.tan@gmail.com> - 1.1.4-3gm
 - Removed ugly hack to configure script to support static ffmpeg libs
 
